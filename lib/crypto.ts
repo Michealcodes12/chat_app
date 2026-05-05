@@ -57,29 +57,42 @@ export async function deriveWrappingKey(password: string, saltBase64: string): P
       hash: "SHA-256"
     },
     passwordKey,
-    { name: "AES-KW", length: 256 },
+    { name: "AES-GCM", length: 256 },
     true,
     ["wrapKey", "unwrapKey"]
   );
 }
 
 export async function wrapPrivateKey(privateKey: CryptoKey, wrappingKey: CryptoKey): Promise<string> {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
   const wrappedKey = await crypto.subtle.wrapKey(
     "pkcs8",
     privateKey,
     wrappingKey,
-    "AES-KW"
+    { name: "AES-GCM", iv: iv }
   );
-  return arrayBufferToBase64(wrappedKey);
+  
+  // Concatenate IV and WrappedKey
+  const wrappedKeyBytes = new Uint8Array(wrappedKey);
+  const combined = new Uint8Array(iv.length + wrappedKeyBytes.length);
+  combined.set(iv, 0);
+  combined.set(wrappedKeyBytes, iv.length);
+  
+  return arrayBufferToBase64(combined.buffer);
 }
 
 export async function unwrapPrivateKey(wrappedKeyBase64: string, wrappingKey: CryptoKey): Promise<CryptoKey> {
-  const wrappedKeyBuffer = base64ToArrayBuffer(wrappedKeyBase64);
+  const combinedBuffer = base64ToArrayBuffer(wrappedKeyBase64);
+  const combined = new Uint8Array(combinedBuffer);
+  
+  const iv = combined.slice(0, 12);
+  const wrappedKey = combined.slice(12);
+
   return await crypto.subtle.unwrapKey(
     "pkcs8",
-    wrappedKeyBuffer,
+    wrappedKey.buffer,
     wrappingKey,
-    { name: "AES-KW" },
+    { name: "AES-GCM", iv: iv },
     {
       name: "RSA-OAEP",
       hash: "SHA-256"

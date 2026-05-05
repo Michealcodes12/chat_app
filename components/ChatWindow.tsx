@@ -4,12 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
-import {
-  Message,
-  getMessages,
-  getPublicKey,
-  sendMessageOffline,
-} from "@/lib/api";
+import { getMessages, getPublicKey, sendMessageOffline } from "@/lib/api";
 import { importPublicKey, encryptMessage, decryptMessage } from "@/lib/crypto";
 
 interface DecryptedMessage {
@@ -263,7 +258,7 @@ export function ChatWindow({ recipientId }: { recipientId: string }) {
   return (
     <div className="flex flex-col h-full bg-background relative">
       {/* Chat Header */}
-      <div className="h-16 border-b border-border bg-surface px-4 md:px-6 flex items-center justify-between flex-shrink-0 z-10 shadow-sm">
+      <div className="h-16 border-b border-border bg-surface px-4 md:px-6 flex items-center justify-between shrink-0 z-10 shadow-sm">
         <div className="flex items-center gap-3">
           <Link
             href="/"
