@@ -88,3 +88,33 @@ export async function getConversations(): Promise<Conversation[]> {
 export async function getPublicKey(userId: string): Promise<{ public_key: string }> {
   return fetchAPI(`/users/${userId}/public-key`);
 }
+
+export interface MessagePayload {
+  ciphertext: string;
+  iv: string;
+  encryptedKey: string;
+  encryptedKeyForSelf: string;
+}
+
+export interface Message {
+  id: string;
+  from_user_id: string;
+  to_user_id: string;
+  payload: MessagePayload;
+  delivered: boolean;
+  created_at: string;
+}
+
+export async function getMessages(userId: string, limit: number = 50, before?: string): Promise<Message[]> {
+  let url = `/conversations/${userId}/messages?limit=${limit}`;
+  if (before) url += `&before=${encodeURIComponent(before)}`;
+  return fetchAPI(url);
+}
+
+export async function sendMessageOffline(to: string, payload: MessagePayload): Promise<Message> {
+  return fetchAPI('/messages', {
+    method: 'POST',
+    body: JSON.stringify({ to, payload })
+  });
+}
+
