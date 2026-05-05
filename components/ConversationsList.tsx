@@ -24,9 +24,15 @@ export function ConversationsList() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-2 p-4">
-        {[1, 2, 3].map(i => (
-          <div key={i} className="h-16 bg-surface-hover animate-pulse rounded-lg"></div>
+      <div className="flex flex-col p-2">
+        {[1, 2, 3, 4, 5].map(i => (
+          <div key={i} className="flex items-center gap-3 p-3">
+            <div className="w-10 h-10 rounded-full bg-surface-hover animate-pulse shrink-0"></div>
+            <div className="flex flex-col gap-2 flex-1">
+              <div className="h-4 bg-surface-hover animate-pulse rounded w-1/2"></div>
+              <div className="h-3 bg-surface-hover animate-pulse rounded w-3/4"></div>
+            </div>
+          </div>
         ))}
       </div>
     );

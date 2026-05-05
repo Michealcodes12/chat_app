@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import { usePathname } from 'next/navigation';
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { UserSearch } from "@/components/UserSearch";
 import { ConversationsList } from "@/components/ConversationsList";
@@ -8,13 +8,18 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
+  const pathname = usePathname();
+  const isChatOpen = pathname !== '/';
 
   return (
     <ProtectedRoute>
-      <div className="flex h-screen w-full bg-background overflow-hidden">
+      <div className="flex h-screen w-full bg-background overflow-hidden relative">
         
         {/* Sidebar */}
-        <div className="w-80 flex-shrink-0 border-r border-border bg-surface flex flex-col h-full z-20 shadow-sm relative">
+        <div className={`
+          w-full md:w-80 flex-shrink-0 border-r border-border bg-surface flex flex-col h-full z-20 shadow-sm
+          ${isChatOpen ? 'hidden md:flex' : 'flex'}
+        `}>
           {/* Header */}
           <header className="p-4 border-b border-border flex justify-between items-center bg-surface">
             <h1 className="text-xl font-bold text-primary tracking-tight">WhisperBox</h1>
@@ -57,7 +62,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         {/* Main Content Area */}
-        <main className="flex-1 flex flex-col h-full bg-background relative z-10">
+        <main className={`
+          flex-1 flex flex-col h-full bg-background relative z-10 w-full
+          ${!isChatOpen ? 'hidden md:flex' : 'flex'}
+        `}>
           {children}
         </main>
         
