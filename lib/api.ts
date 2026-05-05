@@ -60,3 +60,31 @@ async function refreshAccessToken(): Promise<boolean> {
     return false;
   }
 }
+
+// User & Conversation API Wrappers
+
+export interface UserSearchResult {
+  id: string;
+  username: string;
+  display_name: string;
+}
+
+export interface Conversation {
+  user_id: string;
+  display_name: string;
+  username: string;
+  last_message_at: string;
+}
+
+export async function searchUsers(query: string): Promise<UserSearchResult[]> {
+  if (!query) return [];
+  return fetchAPI(`/users/search?q=${encodeURIComponent(query)}`);
+}
+
+export async function getConversations(): Promise<Conversation[]> {
+  return fetchAPI('/conversations');
+}
+
+export async function getPublicKey(userId: string): Promise<{ public_key: string }> {
+  return fetchAPI(`/users/${userId}/public-key`);
+}
