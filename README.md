@@ -11,7 +11,7 @@ The cornerstone of this E2EE implementation is that private keys never leave the
 • Public Key Storage: Public keys are exported as spki (converted to Base64URL) and stored on the WhisperBox backend to act as a public directory.
 • Private Key Storage: Private keys are stored locally using IndexedDB. They are marked with extractable: false, preventing malicious scripts or cross-site scripting (XSS) attacks from exporting the raw key material.
 • Authentication: API access is handled via JWT. The server authenticates the identity of the sender, but has zero cryptographic authority over the data being sent.
-##Security Trade-offs
+## Security Trade-offs
 Building a true zero-knowledge client requires sacrificing some modern conveniences:
 • No Password or Account Recovery: Because the backend does not hold the private key, if a user clears their browser data or loses their device without manually exporting a backup of their key, all previous message history is permanently lost. The server cannot restore access.
 • Device Portability: By default, messages are locked to the specific browser/device where the private key was generated. Multi-device support would require a complex key-syncing mechanism not implemented in this phase.
