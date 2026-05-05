@@ -1,11 +1,11 @@
- ##Encryption Flow Explanation
+ ## Encryption Flow Explanation
 To balance performance with maximum security, this application utilizes Hybrid Encryption via the Web Crypto API.
 1.	Session Key Generation: When a user sends a message, the client generates a one-time, cryptographically secure 256-bit symmetric key (AES-GCM).
 2.	Payload Encryption: The plaintext message is encrypted using this fast AES-GCM key, producing the message ciphertext and an Initialization Vector (IV).
 3.	Key Wrapping: Because the recipient does not have the AES key, the sender encrypts (wraps) the AES key itself using the recipient's RSA Public Key (RSA-OAEP).
 4.	Transmission: The sender transmits the ciphertext, the IV, and the wrapped AES key to the server.
 5.	Decryption: The recipient pulls the bundle from the server, unwraps the AES key using their locally stored RSA Private Key, and uses the recovered AES key to decrypt the actual message.
-##Key Management Explanation
+## Key Management Explanation
 The cornerstone of this E2EE implementation is that private keys never leave the device.
 • Key Generation: Key pairs (RSA-OAEP, 2048-bit) are generated directly in the browser's memory during registration.
 • Public Key Storage: Public keys are exported as spki (converted to Base64URL) and stored on the WhisperBox backend to act as a public directory.
